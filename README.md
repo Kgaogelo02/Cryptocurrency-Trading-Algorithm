@@ -8,7 +8,6 @@ This Streamlit web app allows users to explore a simple Bitcoin trading strategy
 
 This project is inspired by:  
 **Cognitive Class — IBM GPXX0PICEN**  
-*"Create a Cryptocurrency Trading Algorithm in Python"*
 
 ---
 
