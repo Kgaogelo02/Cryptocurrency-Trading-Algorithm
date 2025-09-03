@@ -22,7 +22,7 @@ This project demonstrates a **simple algorithmic trading strategy** for Bitcoin 
 
 ## Live Demo 
 
- [Try the live app here](https://crypocurrency-trading-algorithm-fb2j9qn8g4aavivqq4dme6.streamlit.app/)  
+ [Try the live app here](https://cryptocurrency-trading-algorithm-b5n3bryx4bguiuac7lw4xp.streamlit.app/)  
 
 ---
 
