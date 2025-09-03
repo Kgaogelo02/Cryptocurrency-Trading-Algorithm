@@ -1,31 +1,24 @@
 # Cryptocurrency Trading Algorithm
 
-This Streamlit web app allows users to explore a simple Bitcoin trading strategy based on **moving average (MA) crossovers**. Users can adjust the short-term and long-term SMA windows, view trade signals, and backtest the strategy against a Buy & Hold approach.
-
----
-
-## Inspired By
-
 This project is inspired by:  
 **Cognitive Class — IBM GPXX0PICEN**  
 
 ---
 
-## Features 
+## Overview
 
-- Interactive sidebar to adjust:
-  - Short SMA (days)
-  - Long SMA (days)
-  - Initial portfolio balance
-- Automatic calculation of trade signals (buy/sell)  
-- Portfolio backtest:
-  - Strategy vs Buy & Hold comparison
-  - Total trades, win rate, average trade return
-  - Maximum drawdown
-- Visual buy & sell markers on the BTC price chart  
-- Optional trade signals table for analysis
+This project demonstrates a **simple algorithmic trading strategy** for Bitcoin using Python. Algorithmic trading automates buy/sell decisions based on pre-programmed rules, allowing you to potentially earn profits without constantly monitoring the markets.
 
 ---
+## Features
+
+- Fetches historical Bitcoin-USD prices
+- Calculates short-term and long-term **Simple Moving Averages (SMA)**
+- Generates buy/sell signals based on SMA crossovers
+- Backtests strategy performance against a Buy & Hold baseline
+- Plots interactive charts with trade signals
+- Computes key trade statistics: number of trades, win rate, average trade return, and max drawdown
+- Adjustable parameters: SMA windows and initial balance
 
 ## Live Demo 
 
