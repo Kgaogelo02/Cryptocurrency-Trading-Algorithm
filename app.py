@@ -23,13 +23,12 @@ long_interval  = st.sidebar.slider("Long SMA (days)",  min_value=10, max_value=2
 initial_balance = st.sidebar.number_input("Initial balance (USD)", value=10000.0, step=100.0)
 refresh_button = st.sidebar.button("Refresh data / Run")
 
-# Auto-run (always use last 12 months)
+# Auto-run (last 12 months)
 today = datetime.today()
 one_year_ago = today - timedelta(days=365)
 
 @st.cache_data(ttl=300)
 def download_data():
-    # use progress=False to keep output quiet on deploy
     df = yf.download("BTC-USD", start=one_year_ago.strftime("%Y-%m-%d"),
                      end=today.strftime("%Y-%m-%d"), interval="1d", progress=False)
     return df
@@ -54,25 +53,21 @@ backtest['Alg_Return'] = np.where(trade_signals['Signal'] == 1, backtest['BTC_Re
 backtest['Balance'] = initial_balance * backtest['Alg_Return'].cumprod()
 backtest['BuyHold'] = initial_balance * backtest['BTC_Return'].cumprod()
 
-# Simple trade statistics (closed trades)
+# Compute trades stats
 def compute_trades_stats(signals, prices):
-    buys, sells = [], []
     trades = []
     current_buy = None
     for idx, row in signals.iterrows():
         pos = row['Position']
         if pos == 1.0:  # buy
-            current_buy = prices.loc[idx, 'Close']
-            buys.append((idx, current_buy))
-        elif pos == -1.0 and current_buy is not None:  # sell and we have a buy
-            sell_price = prices.loc[idx, 'Close']
-            sells.append((idx, sell_price))
+            current_buy = prices.loc[idx, 'Close'].item()  # ensure scalar
+        elif pos == -1.0 and current_buy is not None:  # sell
+            sell_price = prices.loc[idx, 'Close'].item()  # ensure scalar
             trades.append((current_buy, sell_price))
             current_buy = None
-    # If still holding at the end (open trade), compute unrealized
+    # If still holding at the end
     if current_buy is not None:
-        current_price = prices['Close'].iloc[-1]
-        trades.append((current_buy, current_price))  # unrealized closed at last price
+        trades.append((current_buy, prices['Close'].iloc[-1]))
 
     returns = [ (s/b - 1.0) for (b, s) in trades ] if trades else []
     wins = [r for r in returns if r > 0]
@@ -93,11 +88,10 @@ running_max = backtest['Balance'].cummax()
 drawdown = (running_max - backtest['Balance']) / running_max
 max_drawdown = drawdown.max()
 
-# Layout: show charts and metrics
+# Layout: charts and metrics
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    # Strategy chart
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.xaxis.set_major_locator(mdates.MonthLocator())
     ax.xaxis.set_major_formatter(DateFormatter("%b-%y"))
@@ -107,7 +101,6 @@ with col1:
     ax.plot(trade_signals['Short'], label=f'{short_interval}-day SMA', lw=1, color='orange')
     ax.plot(trade_signals['Long'], label=f'{long_interval}-day SMA', lw=1, color='purple')
 
-    # Buy & sell markers
     buys_idx = trade_signals.loc[trade_signals['Position'] == 1.0].index
     sells_idx = trade_signals.loc[trade_signals['Position'] == -1.0].index
     ax.scatter(buys_idx, BTC_USD.loc[buys_idx, 'Close'], marker='^', s=80, color='green', label='Buy')
@@ -131,7 +124,6 @@ with col2:
 
 st.markdown("---")
 
-# Backtest plot (wide)
 fig2, ax2 = plt.subplots(figsize=(10, 4))
 ax2.xaxis.set_major_locator(mdates.MonthLocator())
 ax2.xaxis.set_major_formatter(DateFormatter("%b-%y"))
@@ -144,7 +136,7 @@ ax2.grid(alpha=0.3)
 ax2.legend(loc='upper left')
 st.pyplot(fig2)
 
-# Show trade table (optional)
+# Optional trade table
 if st.checkbox("Show trade signals table"):
     display_df = trade_signals[['Short', 'Long', 'Signal', 'Position']].copy()
     st.dataframe(display_df.tail(200))
