@@ -1,6 +1,5 @@
 # Project inspired by:
 # Cognitive Class — IBM GPXX0PICEN
-# "Create a Cryptocurrency Trading Algorithm in Python"
 
 import streamlit as st
 from datetime import datetime, timedelta
@@ -14,7 +13,7 @@ import matplotlib.dates as mdates
 st.set_page_config(page_title="BTC MA Crossover", layout="wide")
 
 st.title("Bitcoin Moving Average Crossover — Last 12 Months")
-st.markdown("**Project inspired by:** Cognitive Class — IBM GPXX0PICEN — _Create a Cryptocurrency Trading Algorithm in Python_")
+st.markdown("**Project inspired by:** Cognitive Class — IBM GPXX0PICEN")
 
 # Sidebar controls
 st.sidebar.header("Settings")
